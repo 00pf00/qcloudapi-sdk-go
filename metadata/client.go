@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -123,7 +124,6 @@ func (m *MetaData) Zone() (string, error) {
 	return zone, nil
 }
 
-//
 type MetaDataClient struct {
 	resource string
 	client   *http.Client
@@ -137,6 +137,9 @@ func (m *MetaDataClient) Resource(resource string) IMetaDataClient {
 func (m *MetaDataClient) Url() (string, error) {
 	if m.resource == "" {
 		return "", errors.New("the resource you want to visit must not be nil!")
+	}
+	if os.Getenv("META_URL") != "" {
+		return fmt.Sprintf("%s/%s", os.Getenv("META_URL"), MAC), nil
 	}
 	return fmt.Sprintf("%s/%s", ENDPOINT, m.resource), nil
 }
